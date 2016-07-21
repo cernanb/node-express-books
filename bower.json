@@ -1,0 +1,21 @@
+{
+  "name": "node-library-app",
+  "description": "",
+  "main": "app.js",
+  "authors": [
+    "cernanb <cernanb@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/cernanb/lv-rails-ng-group-project",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "font-awesome": "^4.6.3"
+  }
+}
