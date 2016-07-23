@@ -1,52 +1,51 @@
 var express = require('express');
-
 var bookRouter = express.Router();
+var mongodb = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectId;
 
 var router = function(nav) {
-
-  var books = [
-    {
-      title: 'Title 1',
-      genre: 'Genre 1',
-      author: 'Author 1',
-      read: false
-    },
-    {
-      title: 'Title 2',
-      genre: 'Genre 2',
-      author: 'Author 2',
-      read: true
-    },
-    {
-      title: 'Title 3',
-      genre: 'Genre 3',
-      author: 'Author 3',
-      read: false
-    },
-    {
-      title: 'Title 4',
-      genre: 'Genre 4',
-      author: 'Author 4',
-      read: true
-    },
-  ];
-
+  bookRouter.use(function(req, res, next) {
+    if (!req.user) {
+      res.redirect('/');
+    }
+    next();
+  });
   bookRouter.route('/')
     .get(function(req, res) {
-      res.render('bookListView', {
-        title: 'Books',
-        nav: nav,
-        books: books
+      var url = 'mongodb://localhost:27017/libraryApp';
+
+      mongodb.connect(url, function(err, db) {
+        var collection = db.collection('books');
+
+        collection.find({}).toArray(
+          function(err, results) {
+            res.render('bookListView', {
+              title: 'Books',
+              nav: nav,
+              books: results
+            });
+          }
+        );
       });
     });
 
   bookRouter.route('/:id')
     .get(function(req, res) {
-      var id = req.params.id;
-      res.render('bookView', {
-        title: 'Books',
-        nav: nav,
-        book: books[id]
+      var id = new ObjectId (req.params.id);
+      var url = 'mongodb://localhost:27017/libraryApp';
+
+      mongodb.connect(url, function(err, db) {
+        var collection = db.collection('books');
+
+        collection.findOne({_id: id},
+          function(err, results) {
+            res.render('bookView', {
+              title: 'Books',
+              nav: nav,
+              book: results
+            });
+          }
+        );
       });
     });
 
